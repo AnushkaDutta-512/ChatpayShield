@@ -27,7 +27,21 @@ const transactionSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    anomalyScore: {
+  type: Number,
+  default: 0,
+},
 
+anomalyReasons: [
+  {
+    type: String,
+  },
+],
+
+finalRiskScore: {
+  type: Number,
+  default: 0,
+},
     riskLevel: {
       type: String,
       default: "LOW",
