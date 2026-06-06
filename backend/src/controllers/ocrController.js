@@ -31,4 +31,4 @@ const analyzeScreenshot = async (req, res) => {
 
 module.exports = {
   analyzeScreenshot,
-} ;
+};
