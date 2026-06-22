@@ -1,7 +1,7 @@
 const extractTextFromImage = require("../services/ocrService");
 
 const analyzeTransactionRisk = require("../services/riskAnalysisService");
-
+const analyzeTextWithAI = require("../services/pythonAiService");
 const analyzeScreenshot = async (req, res) => {
   try {
     const imagePath = req.file.path;
@@ -10,16 +10,13 @@ const analyzeScreenshot = async (req, res) => {
     const extractedText = await extractTextFromImage(imagePath);
 
     // AI Risk Analysis
-    const riskAnalysis = analyzeTransactionRisk({
-      amount: 0,
-      receiverUpiId: "unknown@upi",
-      note: extractedText,
-    });
+    const aiAnalysis =
+    await analyzeTextWithAI(extractedText);
 
     res.status(200).json({
       success: true,
       extractedText,
-      riskAnalysis,
+      aiAnalysis,
     });
   } catch (error) {
     res.status(500).json({
