@@ -33,15 +33,35 @@ const aiAnalysis = await analyzeTextWithAI(note);
   behaviorAnalysis.anomalyScore * 0.3 +
   aiAnalysis.fraud_score * 0.3
 );
+let riskLevel = "LOW";
+
+if (finalRiskScore >= 80) {
+  riskLevel = "CRITICAL";
+} else if (finalRiskScore >= 60) {
+  riskLevel = "HIGH";
+} else if (finalRiskScore >= 30) {
+  riskLevel = "MEDIUM";
+}
+const confidence = Math.min(
+  100,
+  Math.round(
+    (
+      riskAnalysis.riskReasons.length * 15 +
+      behaviorAnalysis.anomalyReasons.length * 20 +
+      aiAnalysis.reasons.length * 10
+    )
+  )
+);
     // Save transaction
     const transaction = await Transaction.create({
       user: req.user.id,
       amount,
       receiverUpiId,
       note,
+      confidence,
 
       riskScore: riskAnalysis.riskScore,
-      riskLevel: riskAnalysis.riskLevel,
+      riskLevel,
       riskReasons: riskAnalysis.riskReasons,
 
       anomalyScore: behaviorAnalysis.anomalyScore,

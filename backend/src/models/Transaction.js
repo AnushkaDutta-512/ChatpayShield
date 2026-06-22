@@ -22,7 +22,10 @@ const transactionSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-
+confidence: {
+  type: Number,
+  default: 0,
+},
     riskScore: {
       type: Number,
       default: 0,
@@ -69,6 +72,7 @@ finalRiskScore: {
       },
     ],
   },
+  
   {
     timestamps: true,
   }
