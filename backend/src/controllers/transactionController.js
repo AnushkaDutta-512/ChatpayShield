@@ -1,7 +1,8 @@
 const Transaction = require("../models/Transaction");
 
 const analyzeTransactionRisk = require("../services/riskAnalysisService");
-
+const analyzeTextWithAI =
+  require("../services/pythonAiService");
 const analyzeBehavior = require("../services/behaviorAnalysisService");
 
 const createTransaction = async (req, res) => {
@@ -17,18 +18,21 @@ const createTransaction = async (req, res) => {
 
     // Behavioral anomaly analysis
     const behaviorAnalysis = await analyzeBehavior(
-      req.user.id,
-      {
-        amount,
-        receiverUpiId,
-      }
-    );
+  req.user.id,
+  {
+    amount,
+    receiverUpiId,
+  }
+);
+
+const aiAnalysis = await analyzeTextWithAI(note);
 
     // Combined intelligence score
-    const finalRiskScore =
-      riskAnalysis.riskScore +
-      behaviorAnalysis.anomalyScore;
-
+    const finalRiskScore = Math.round(
+  riskAnalysis.riskScore * 0.4 +
+  behaviorAnalysis.anomalyScore * 0.3 +
+  aiAnalysis.fraud_score * 0.3
+);
     // Save transaction
     const transaction = await Transaction.create({
       user: req.user.id,
@@ -42,7 +46,9 @@ const createTransaction = async (req, res) => {
 
       anomalyScore: behaviorAnalysis.anomalyScore,
       anomalyReasons: behaviorAnalysis.anomalyReasons,
-
+      
+fraudScore: aiAnalysis.fraud_score,
+fraudReasons: aiAnalysis.reasons,
       finalRiskScore,
     });
 
