@@ -7,7 +7,7 @@ const transactionRoutes = require("./routes/transactionRoutes");
 const ocrRoutes = require("./routes/ocrRoutes");
 const app = express();
 const analyticsRoutes = require("./routes/analyticsRoutes");
-const app = express();
+
 
 app.use(cors());
 app.use(express.json());
